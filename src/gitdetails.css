@@ -1,0 +1,23 @@
+.appbar1 {
+    background-color: #75acfc;
+    padding-top: 20px;
+    flex-direction: row;
+    display: flex;
+    margin: 0px;
+    color: white;
+    justify-content: space-between;
+  }
+
+.cardStyle {
+   margin-top: 5%;
+    display: flex;
+    justify-content: center;
+}
+.usersearchbutton {
+    display: flex;
+    justify-content: center !important;
+    align-items: center!important;
+    align-self: center !important; 
+    /* margin-right: 20px !important;
+    margin-bottom: 20px !important; */
+}

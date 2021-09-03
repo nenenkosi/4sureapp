@@ -1,0 +1,14 @@
+.appbar2 {
+    background-color: #00bbf0;
+    padding-top: 20px;
+    flex-direction: row;
+    display: flex;
+    margin: 0px;
+    color: white;
+  }
+
+.cardStyle {
+    margin-top: 5%;
+    display: flex;
+    justify-content: center;
+}

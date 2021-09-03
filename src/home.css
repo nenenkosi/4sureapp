@@ -1,0 +1,21 @@
+.appbar {
+    background-color: #75acfc;
+    padding: 24px;
+    flex-direction: row;
+    display: flex;
+    margin: 0px;
+    color: white;
+    justify-content: space-between;
+  }
+.serach {
+   margin: 20px;
+   justify-content: center;
+   display: flex;
+}
+.listItems {
+margin-left: 5%;
+margin-right: 5%;  
+padding-left: 5%;
+padding-right: 5%;  
+background-color: whitesmoke;
+}
