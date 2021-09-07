@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { Card, Image, Icon, Button } from 'semantic-ui-react'
 import './gitdetails.css'

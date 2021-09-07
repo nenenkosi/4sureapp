@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import './home.css'
 import { Form, List, Button, Divider } from 'semantic-ui-react'
 import { getUserActivities, getRepo } from './services/api'
-import { createLocaldb, getLocaldb, deletedLocaldb, updateLocaldb } from './services/lndexeddb';
+import { createLocaldb, getLocaldb,  updateLocaldb } from './services/lndexeddb';
 
 // import { AllFlights } from './api-interfaces'
 // import axios from "../node_modules/axios"
@@ -28,41 +28,52 @@ const HomePage = () => {
     const searchUser = () => {
         console.log(userInput);
         setActivities([])
+
         if (userInput) {
-            getUserActivities(userInput).then((res) => {
-                console.log(res);
+            // check if online if offline check local DB
+            if (navigator.onLine === true) {
+                console.log('navigator.onLine');
+                getLocaldb('', 'userActivities', '').then((rec) => {
+                    console.log(rec[0].data);
+                    setActivities(rec[0].data)
+                })
+            } else {
+                // else go to Github Api and check for results
+                getUserActivities(userInput).then((res) => {
+                    console.log(res);
 
-                if (typeof res != "undefined" && res != null && res.length != null && res.length > 0) {
-                    setActivities(res)
-                    seterror(null)
-                    setnoInput(false)
-                    // deletedLocaldb()
+                    if (typeof res != "undefined" && res != null && res.length != null && res.length > 0) {
+                        setActivities(res)
+                        seterror(null)
+                        setnoInput(false)
 
-                    getLocaldb(res, 'userActivities', 0).then((rec) => {
-                        console.log(rec);
-                        if (rec.length === 0) {
-                            console.log(`home add`);
-                            createLocaldb(res, 'userActivities', 0).then((rec) => {
-                                console.log(rec);
-                            })
-                        } else {
-                            console.log(`home update`);
-                            updateLocaldb(res, 'userActivities', 0).then((rec) => {
-                                console.log(rec);
-                            })
-                        }
-                    })
-                } else {
-                    console.log('firsr else');
-                    seterror('error')
-                    setnoInput(false)
-                }
+                        getLocaldb(res, 'userActivities', 0).then((rec) => {
+                            console.log(rec);
+                            if (rec.length === 0) {
+                                console.log(`home add`);
+                                createLocaldb(res, 'userActivities', 0).then((rec) => {
+                                    console.log(rec);
+                                })
+                            } else {
+                                console.log(`home update`);
+                                updateLocaldb(res, 'userActivities', 0).then((rec) => {
+                                    console.log(rec);
+                                })
+                            }
+                        })
+                    } else {
+                        console.log('firsr else');
+                        seterror('error')
+                        setnoInput(false)
+                    }
 
-            })
+                })
+            }
         } else {
             console.log('else');
             setnoInput(true)
         }
+
     }
 
     // navigate to get Details page with param from the use activities from the home page
@@ -78,7 +89,8 @@ const HomePage = () => {
         history.push('/userSearch',)
     }
     return (
-
+        console.log(navigator.onLine),
+        console.log(navigator.onLine),
         <div>
             <div className="appbar">
                 <div>
@@ -90,7 +102,7 @@ const HomePage = () => {
             </div>
 
             {noInput ? <div>
-                <h1 style={{ textAlign: 'center', color: '#808080', marginTop: 100, marginTop: 100 }}>Please type in a github username to see all activities</h1>
+                <h1 style={{ textAlign: 'center', color: '#808080', marginTop: 100}}>Please type in a github username to see all activities</h1>
 
             </div> : null}
             <div className='serach'>

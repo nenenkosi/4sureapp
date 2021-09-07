@@ -1,43 +1,45 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import './userSearch.css'
-import { Form, Card, Image, List, Button, Icon, Divider } from 'semantic-ui-react'
-import { getGithubUser, getUserActivities, getRepo } from './services/api'
-import { createLocaldb, getLocaldb, deletedLocaldb, updateLocaldb } from './services/lndexeddb';
-
-// import { AllFlights } from './api-interfaces'
-// import axios from "../node_modules/axios"
-
+import { Form, Card, Image, Icon, } from 'semantic-ui-react'
+import { getGithubUser } from './services/api'
+import { createLocaldb, getLocaldb, updateLocaldb } from './services/lndexeddb';
 
 const Usersearch = () => {
 
     let history = useHistory();
-
 
     const [name, setname] = useState('')
     const [login, setlogin] = useState('')
     const [avatar_url, setavatar_url] = useState('')
     const [followers, setfollowers] = useState('')
     const [following, setfollowing] = useState('')
-    const [events_url, setevents_url] = useState('')
     const [email, setemail] = useState('')
     const [public_repos, setpublic_repos] = useState('')
     const [public_gists, setpublic_gists] = useState('')
     const [userInput, setuserInput] = useState('')
     const [error, seterror] = useState(false)
     const [noInput, setnoInput] = useState(true)
-    const [activities, setActivities] = useState([])
+    const [update, setupdate] = useState(true)
 
     // input on change value
     const userInputOnchange = (e) => {
         console.log(e.target.value);
         setuserInput(e.target.value)
     }
-
+    useEffect(() => {
+        if (navigator.onLine === true) {
+            console.log('navigator.onLine');
+            getLocaldb('', 'userSearch', '').then((rec) => {
+                console.log(rec[0].data);
+                updateData(rec[0].data)
+            })
+        }
+    }, []);
     // search for user and display data or display error
     const searchUser = () => {
         console.log(userInput);
-        setActivities([])
+        
         if (userInput) {
             getGithubUser(userInput).then((res) => {
                 console.log(res);
@@ -46,7 +48,6 @@ const Usersearch = () => {
                     console.log(Object.entries(res).length);
                     seterror(true)
                     setnoInput(false)
-                    //deletedLocaldb()
 
                     updateData(res)
                     getLocaldb(res, 'userSearch', 1).then((rec) => {
@@ -79,13 +80,12 @@ const Usersearch = () => {
     }
 
     // updata state of user data on profile
-    const updateData = ({ avatar_url, name, login, followers, following, events_url, email, public_repos, public_gists }) => {
+    const updateData = ({ avatar_url, name, login, followers, following, email, public_repos, public_gists }) => {
         setname(name)
         setlogin(login)
         setavatar_url(avatar_url)
         setfollowers(followers)
         setfollowing(following)
-        setevents_url(events_url)
         setemail(email)
         setpublic_repos(public_repos)
         setpublic_gists(public_gists)
@@ -95,7 +95,7 @@ const Usersearch = () => {
         history.goBack()
     }
     return (
-        console.log(error),
+ 
         <div>
             <div onClick={clickBack} className="appbar2">
                 <div>
@@ -107,7 +107,7 @@ const Usersearch = () => {
             </div>
 
             {noInput ? <div>
-                <h1 style={{ textAlign: 'center', color: '#808080', marginTop: 100, marginTop: 100 }}>Please type in a github username </h1>
+                <h1 style={{ textAlign: 'center', color: '#808080', marginTop: 100}}>Please type in a github username </h1>
 
             </div> : null}
             <div className='serach'>
@@ -118,7 +118,7 @@ const Usersearch = () => {
                     </Form.Group>
                 </Form>
             </div>
-            {!error && noInput == false ? <h1 style={{ textAlign: 'center', color: '#808080' }}>No user found for that username</h1> : null}
+            {!error && noInput === false ? <h1 style={{ textAlign: 'center', color: '#808080' }}>No user found for that username</h1> : null}
             <div className='cardStyle'>
                 {error ? <Card>
                     <Image src={avatar_url} wrapped ui={false} />
